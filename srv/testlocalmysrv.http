@@ -1,0 +1,67 @@
+
+GET http://localhost:4004/CatalogService
+
+
+### V2 service request
+GET http://localhost:4004/v2/CatalogService
+
+###Read Service Metadata
+GET http://localhost:4004/CatalogService/$metadata
+
+###Read top 3 employees
+GET http://localhost:4004/CatalogService/EmployeeSet?$top=3
+
+
+##### Read Purchase orders
+GET http://localhost:4004/CatalogService/POs?$top=2&$expand=Items,PARTNER_GUID
+
+
+###Create New Eemployee in EmployeeSet table
+POST http://localhost:4004/CatalogService/EmployeeSet
+Content-Type: application/json;IEEE754Compatible=true
+
+{
+       // "ID"            :"87de497b-1000-46b8-bf41-7b92e744c994", //Unique number will cfreate
+		"nameFirst"     : "Sangamesh",
+        "nameMiddle"    : "Naganath",
+        "nameLast"      : "Eklare",
+        "nameInitials"  : "null",
+        "sex"           : "M",
+        "language"      : "E",
+        "phoneNumber"   : "+91 (814) 372-0092",
+        "email"         : "sangamesheklare@gmail.com",
+        "loginName"     : "SEKLARE",
+        "accountNumber" : "111222333",
+        "bankName"      : "HDFC"
+}
+
+
+### Read Newly created Eemployee in EmployeeSet table
+GET http://localhost:4004/CatalogService/EmployeeSet/81719c21-0a1a-4b9e-b8ca-4fe777182a88
+
+
+### Update Newly created Eemployee in EmployeeSet table
+PATCH  http://localhost:4004/CatalogService/EmployeeSet/81719c21-0a1a-4b9e-b8ca-4fe777182a88
+Content-Type: application/json;IEEE754Compatible=true
+
+{
+
+    "salaryAmount"      : "5555.99",
+    "Currency_code"     : "USD"
+}
+
+### Create a Purchase Order 
+POST http://localhost:4004/CatalogService/POs
+Content-Type: application/json;IEEE754Compatible=true
+
+{
+
+    "Currency"           : { "code": "INR" },
+    "GROSS_AMOUNT"       : "800.00",
+    "NET_AMOUNT"         : "1000.00",
+    "TAX_AMOUNT"         : "200.00",
+    "PO_ID"              :  309999999,
+    "LIFECYCLE_STATUS"   : "N",
+    "OVERALL_STATUS"     : "P",
+    "PARTNER_GUID_NODE_KEY" : "74867AD200E41EDBA5D8B06885B01111"
+}
