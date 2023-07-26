@@ -1,7 +1,7 @@
 _schema-version: '3.1'
 ID: projtable
 version: 1.0.0
-description: "A simple CAP project."
+description: A simple CAP project.
 parameters:
   enable-parallel-deployments: true
 build-parameters:
@@ -18,12 +18,11 @@ modules:
     build-parameters:
       builder: npm
     provides:
-      - name: srv-api # required by consumers of CAP services (e.g. approuter)
+      - name: srv-api
         properties:
-          srv-url: ${default-url}
+          srv-url: '${default-url}'
     requires:
       - name: projtable-db
-
   - name: projtable-db-deployer
     type: hdb
     path: gen/db
@@ -31,7 +30,7 @@ modules:
       buildpack: nodejs_buildpack
     requires:
       - name: projtable-db
-
+    properties: {}
 resources:
   - name: projtable-db
     type: com.sap.xs.hdi-container
