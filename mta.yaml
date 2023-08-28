@@ -1,39 +1,46 @@
-_schema-version: '3.1'
+_schema-version: "3.1"
 ID: projtable
-version: 1.0.0
 description: A simple CAP project.
+version: 1.0.1
+modules:
+- name: projtable-srv
+  type: nodejs
+  path: gen/srv
+  requires:
+  - name: projtable-db
+  provides:
+  - name: srv-api
+    properties:
+      srv-url: ${default-url}
+  parameters:
+    buildpack: nodejs_buildpack
+  build-parameters:
+    builder: npm
+- name: projtable-db-deployer
+  type: hdb
+  path: gen/db
+  requires:
+  - name: projtable-db
+    properties:
+      TARGET_CONTAINER: ~{hdi-container-name}
+  parameters:
+    buildpack: nodejs_buildpack
+resources:
+- name: projtable-db
+  type: com.sap.xs.hdi-container
+  parameters:
+    service: hana
+    service-plan: hdi-shared
+  properties:
+    hdi-container-name: ${service-name}
+- name: cross-container-service-1
+  type: deleteme
+- name: cross-container-service-2
+  type: deleteme
 parameters:
   enable-parallel-deployments: true
 build-parameters:
   before-all:
-    - builder: custom
-      commands:
-        - npx cds build --production
-modules:
-  - name: projtable-srv
-    type: nodejs
-    path: gen/srv
-    parameters:
-      buildpack: nodejs_buildpack
-    build-parameters:
-      builder: npm
-    provides:
-      - name: srv-api
-        properties:
-          srv-url: '${default-url}'
-    requires:
-      - name: projtable-db
-  - name: projtable-db-deployer
-    type: hdb
-    path: gen/db
-    parameters:
-      buildpack: nodejs_buildpack
-    requires:
-      - name: projtable-db
-    properties: {}
-resources:
-  - name: projtable-db
-    type: com.sap.xs.hdi-container
-    parameters:
-      service: hana
-      service-plan: hdi-shared
+  - builder: custom
+    commands:
+    - npx cds build --production

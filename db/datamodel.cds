@@ -1,4 +1,4 @@
-namespace tables.db;
+//namespace tables.db;
 
 using {cuid, managed,temporal,Currency} from '@sap/cds/common';
 
@@ -6,8 +6,11 @@ using {own.commfile} from './commons'; // tables.comm is namespace and ./commons
 
 type Guid : String(32);
 
-
-context master {
+//////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////
+context tables.db {
+    
+    context master {
 
     entity businesspartner {
         key NODE_KEY      : Guid;
@@ -81,9 +84,11 @@ context master {
         bankName      : String(64);
         
     } 
-}
+ }
 
-context transaction {
+ //////////////////////////////////////////////////////////////////
+ //////////////////////////////////////////////////////////////////
+    context transaction {
 
     entity purchaseorder : commfile.Amount, cuid {
         PO_ID            : Integer;
@@ -105,14 +110,14 @@ context transaction {
 
     }
 
-}
+    }
 
-//////////////////////////////////////////////////////////////////
-//////////////////////////////////////////////////////////////////
+ //////////////////////////////////////////////////////////////////
+ //////////////////////////////////////////////////////////////////
 
-context CDSViews {
-
-    define view![POWorklist] as
+    context CDSViews {
+    
+     define view![POWorklist] as
         select from transaction.purchaseorder {
             key PO_ID                              as![PurchaseOrderId],
                 PARTNER_GUID.BP_ID                 as![PartnerId],
@@ -158,7 +163,7 @@ context CDSViews {
         };
 
 
-    define view![ItemView] as
+     define view![ItemView] as
         select from transaction.poitems {
             PARENT_KEY.PARTNER_GUID.NODE_KEY as![Partner],
             PRODUCT_GUID.NODE_KEY            as![ProductId],
@@ -170,7 +175,7 @@ context CDSViews {
         };
 
 
-    define view ProductViewSub as
+     define view ProductViewSub as
         select from master.product as prod{
             PRODUCT_ID as![ProductId],
             texts.DESCRIPTION as![Description],
@@ -183,7 +188,7 @@ context CDSViews {
         };
 
 
-    define view ProductView as
+     define view ProductView as
         select from master.product
         mixin {
             PO_ORDERS : Association[ * ] to ItemView
@@ -206,7 +211,7 @@ context CDSViews {
         };
 
 
-    define view CProductValuesView as 
+     define view CProductValuesView as 
         select from ProductView{
             ProductId,
             Country,
@@ -214,7 +219,31 @@ context CDSViews {
             round(sum(PO_ORDERS.GrossAmount),2) as ![POGrossAmount]: Decimal(10, 2)
         }
         group by ProductId,Country,PO_ORDERS.CurrencyCode
-}
+    }
 
+}
+//////////////////////////////////////////////////////////////////////////////
+// @cds.persistence.calcview
+// @cds.persistence.exists
+// entity ![PODetails] {
+//     ![NODE_KEY]: String(32) @title : 'NODE_KEY: NODE_KEY';
+//     ![BP_ROLE]: String(2) @title : 'BP_ROLE: BP_ROLE';
+//     ![BP_ID]: String(32) @title : 'BP_ID: BP_ID';
+//     ![COMPANY_NAME]: String(250) @title : 'COMPANY_NAME: COMPANY_NAME';
+//     ![CITY]: String(44) @title : 'CITY: CITY';
+//     ![POSTAL_CODE]: String(8) @title : 'POSTAL_CODE: POSTAL_CODE';
+//     ![COUNTRY]: String(44) @title : 'COUNTRY: COUNTRY';
+//     ![ID]: String(36) @title : 'ID: ID';
+//     ![PARTNER_GUID_NODE_KEY]: String(32) @title : 'PARTNER_GUID_NODE_KEY: PARTNER_GUID_NODE_KEY';
+//     ![OVERALL_STATUS]: String(1) @title : 'OVERALL_STATUS: OVERALL_STATUS';
+//     ![PO_ID]: Integer @title : 'TodaysDate';
+//     ![CURRENCY_CODE]: String(3) @title : 'CURRENCY_CODE: CURRENCY_CODE';
+//     ![PO_ITEM_POS]: Integer @title : 'PO_ITEM_POS: PO_ITEM_POS';
+//     ![TodaysDate]: Date @title : 'CURRENCY_CODE: CURRENCY_CODE';
+//     ![GROSS_AMOUNT]: Decimal(15, 2) @title : 'GROSS_AMOUNT: GROSS_AMOUNT';
+//     ![NET_AMOUNT]: Decimal(15, 2) @title : 'NET_AMOUNT: NET_AMOUNT';
+//     ![TAX_AMOUNT]: Decimal(15, 2) @title : 'TAX_AMOUNT: TAX_AMOUNT';
+
+// }
 
 
